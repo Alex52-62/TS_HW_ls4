@@ -1,0 +1,131 @@
+<script type="module">
+    import {FlatRentSdk, addDays, cloneDate} from '/scripts/flat-rent-sdk.js'
+
+    const sdk = new FlatRentSdk()
+    const today = new Date()
+
+    sdk.get('mvm32l')
+    .then((flat) => {
+        console.log('flat by id', flat)
+    })
+
+    sdk.search({city: 'Самара'})
+        .catch((result) => {
+            console.error('search incorrect city', result)
+        })
+
+    sdk.search({city: 'Санкт-Петербург', supplier: 'Alfa'})
+        .catch((result) => {
+            console.error('search without dates', result)
+        })
+
+    sdk.search({
+        city: 'Санкт-Петербург',
+        supplier: 'Alfa',
+        checkInDate: new Date(2021, 6, 26)
+    })
+        .catch((result) => {
+            console.error('search with only check-in date', result)
+        })
+
+    sdk.search({
+        city: 'Санкт-Петербург',
+        supplier: 'Alfa' ,
+        checkInDate: addDays(cloneDate(today), -1),
+        checkOutDate: addDays(cloneDate(today), -6)
+    })
+        .catch((result) => {
+            console.error('search with check-in in the past', result)
+        })
+
+    sdk.search({
+        city: 'Санкт-Петербург',
+        supplier: 'Alfa' ,
+        checkInDate: cloneDate(today),
+        checkOutDate: addDays(cloneDate(today), -6)
+    })
+        .catch((result) => {
+            console.error('search with check-out date less than check-in', result)
+        })
+
+    sdk.search({
+        city: 'Санкт-Петербург',
+        supplier: 'Alfa',
+        checkInDate: cloneDate(today),
+        checkOutDate: addDays(cloneDate(today), 1)
+    })
+        .then((result) => {
+            console.log('search for one night', result)
+        })
+
+    sdk.search({
+        city: 'Санкт-Петербург',
+        supplier: 'Alfa' ,
+        checkInDate: cloneDate(today),
+        checkOutDate: addDays(cloneDate(today), 2)
+    })
+        .then((result) => {
+            console.log('search for two nights', result)
+        })
+
+    sdk.search({
+        city: 'Санкт-Петербург',
+        supplier: 'Alfa' ,
+        checkInDate: cloneDate(today),
+        checkOutDate: addDays(cloneDate(today), 1),
+        priceLimit: 4500
+    })
+        .then((result) => {
+            console.log('search with price limit', result)
+        })
+
+    sdk.search({city: 'Санкт-Петербург', supplier: 'Yota'})
+        .catch((result) => {
+            console.error('search incorrect supplier', result)
+    })
+
+    sdk.search({
+        city: 'Санкт-Петербург',
+        supplier: 'Alfa',
+        checkInDate: cloneDate(today),
+        checkOutDate: addDays(cloneDate(today), 1),
+        priceLimit: 4500
+    })
+        .then((result) => {
+            console.log('search with price limit', result)
+        })
+
+    sdk.search({
+        city: 'Санкт-Петербург',
+        supplier: 'Beta',
+        checkInDate: cloneDate(today),
+        checkOutDate: addDays(cloneDate(today), 2)
+    })
+        .then((result) => {
+            console.log('search for two nights', result)
+        })
+
+    sdk.book('ab2e2', cloneDate(today), addDays(cloneDate(today), 2))
+        .then((result) => {
+            console.log('book flat', result)
+
+    sdk.search({
+                city: 'Санкт-Петербург',
+                checkInDate: cloneDate(today),
+                checkOutDate: addDays(cloneDate(today), 3)
+            })
+                .then((result) => {
+                    console.error('search without supplier', result, result.length)
+                })
+        })
+
+    sdk.book('vnd331', addDays(cloneDate(today), 5), addDays(cloneDate(today), 6))
+    .then((result) => {
+            console.log('book flat', result)
+    })
+
+    sdk.book('aaa000', addDays(cloneDate(today), 5), addDays(cloneDate(today), 6))
+    .then((result) => {
+            console.error('there is no such flat', result)
+    })
+</script>
